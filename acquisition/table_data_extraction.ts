@@ -1,4 +1,4 @@
-import { winter, trad, sport, boulder } from './raw_tables.js';
+import { winter, trad, sport, boulder } from './raw_tables.ts';
 import { writeFile } from 'fs/promises';
 
 type importhtmls = {
@@ -25,6 +25,7 @@ type crag = {
   lat: String;
   name: String;
   numStaredClimbs: String;
+  ukcLink: String;
 };
 
 const regexs: {
@@ -34,6 +35,7 @@ const regexs: {
   lat: RegExp;
   name: RegExp;
   numStaredClimbs: RegExp;
+  ukcLink: RegExp;
 } = {
   aspect: /Faces:<\/strong> <small>(.*)<\/small><br>/g,
   rockType: /Rock:<\/strong><br><small>(.*)<\/small>/g,
@@ -42,10 +44,12 @@ const regexs: {
   name: /href=".*">(.*)<\/a><br><span class="text-muted small"><\/span>/g,
   numStaredClimbs:
     /Routes: <\/strong><span class="text-break">(\d+) \(\d+ total\)<\/span>/g,
-  ukc,
+  ukcLink: /href="(\/logbook\/crags[a-z\/_\-\d]+)/g,
 };
 
 const regexKeys = Object.keys(regexs);
+
+console.log(regexKeys);
 
 Arr.forEach((style) => {
   const trArray1: string[] =
@@ -68,6 +72,7 @@ Arr.forEach((style) => {
         lat: '',
         name: '',
         numStaredClimbs: '',
+        ukcLink: '',
       };
       regexKeys.forEach((regexKey) => {
         const matchArray = [
@@ -84,6 +89,7 @@ Arr.forEach((style) => {
   });
 
   const cragsFiltered = [...new Set(crags)];
+  console.log(cragsFiltered[0]);
 
-  writeFile(`../${style}_crags.json`, JSON.stringify(cragsFiltered));
+  writeFile(`./${style}_crags.json`, JSON.stringify(cragsFiltered));
 });

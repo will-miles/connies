@@ -1,16 +1,6 @@
-import boulderJson from '../data/boulder_crags.json';
-import sportJson from '../data/sport_crags.json';
-import tradJson from '../data/trad_crags.json';
-import winterJson from '../data/winter_crags.json';
+import fetchWeatherData from '../apis/api1/api1.ts';
 import React, { Component } from 'react';
 import getDistanceFromLatLonInKm from '../utils.ts';
-
-const cragObj: { [index: string]: any } = {
-  boulder: boulderJson,
-  sport: sportJson,
-  trad: tradJson,
-  winter: winterJson,
-};
 
 class Home extends Component {
   state: {
@@ -24,6 +14,8 @@ class Home extends Component {
       lat: string;
       name: string;
       numStaredClimbs: string;
+      distance: string;
+      weather_data: any;
     }[];
   } = {
     style: '',
@@ -76,20 +68,24 @@ class Home extends Component {
       lat: string;
       name: string;
       numStaredClimbs: string;
+      distance: string;
+      weather_data: any;
     }[] = this.state.crags;
     console.log(crags);
-    return (
-      <ul className='flex flex-wrap justify-center'>
-        {crags.map((crag) => (
-          <li className='flex flex-col animate-pulse m-4 h-64 w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/6 shadow-lg'>
-            <div>
-              <h2>{crag.name}</h2>
-              <h2>{crag.distance}</h2>
-            </div>
-          </li>
-        ))}
-      </ul>
-    );
+    if (crags[0]) {
+      return (
+        <ul className='flex flex-wrap justify-center'>
+          {crags.map((crag) => (
+            <li className='flex flex-col m-4 h-64 w-full border-1 r-md'>
+              <div>
+                <h2>{crag.name}</h2>
+                <h2>{parseInt(crag.distance)}</h2>
+              </div>
+            </li>
+          ))}
+        </ul>
+      );
+    }
   };
 
   handleLocationChange = () => {
@@ -104,6 +100,9 @@ class Home extends Component {
 
   handleFromSubmit = (e: any) => {
     e.preventDefault();
+    this.setState({
+      loading: true,
+    });
     const styles: any = document.getElementById('styles') as HTMLSelectElement;
 
     enum Direction {
@@ -122,37 +121,29 @@ class Home extends Component {
     // example location: 53.52574940018496, -1.919685834247175
 
     const searchLatLong = searchObj.location.split(', ');
-    console.log(searchLatLong);
     const searchLat = parseFloat(searchLatLong[0]);
     const searchLong = parseFloat(searchLatLong[1]);
 
-    const filteredCragArray = cragObj[searchObj.style].filter(
-      (crag: {
-        aspect: string;
-        rockType: string;
-        long: string;
-        lat: string;
-        name: string;
-        numStaredClimbs: string;
-        distance: number;
-      }) => {
-        const distance = getDistanceFromLatLonInKm(
-          searchLat,
-          searchLong,
-          parseFloat(crag.lat),
-          parseFloat(crag.long)
-        );
-        crag.distance = distance;
-        return distance < searchObj.range ? true : false;
+    fetchWeatherData(
+      searchObj.style,
+      searchLat,
+      searchLong,
+      searchObj.range
+    ).then((response) => {
+      if (response.error) {
+        // error occurred let the user know
+        this.setState({
+          error: response.error,
+          loading: false,
+        });
+      } else {
+        this.setState({
+          error: false,
+          crags: response,
+          loading: false,
+        });
       }
-    );
-
-    console.log(filteredCragArray);
-
-    if (cragObj[searchObj.style]) {
-      console.log(searchObj);
-      this.setState({ crags: filteredCragArray });
-    }
+    });
   };
 }
 
