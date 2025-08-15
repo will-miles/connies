@@ -6,7 +6,7 @@ import NoPage from './pages/NoPage';
 
 function App() {
   return (
-    <div className='font-monospace'>
+    <div className='bg-timberwolf font-monospace'>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Layout />}>

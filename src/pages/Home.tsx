@@ -31,33 +31,37 @@ class Home extends Component {
   };
   render() {
     return (
-      <div>
-        <h1 className='justify-center m-auto text-center'>Connies</h1>
-        <form className='bg-slate-400 max-w-lg p-4 rounded-md ml-auto mr-auto '>
+      <div className='text-black_olive'>
+        <h1 className='justify-center m-auto mt-5 mb-5 text-7xl text-center text-flame'>
+          connies.in
+        </h1>
+        <form className='bg-floral_white max-w-lg p-4 rounded-md ml-auto mr-auto '>
           <div className='grid grid-cols-2 gap-4'>
             <label>Climbing style:</label>
             <div>
-              <select id='styles' name='styles'>
+              <select className='rounded-md p-1' id='styles' name='styles'>
                 <option value='boulder'>Boulder</option>
                 <option value='sport'>Sport</option>
                 <option value='trad'>Trad</option>
                 <option value='winter'>Winter</option>
               </select>
             </div>
-            <label>Origin location</label>
+            <label>Origin location:</label>
             <input
               id='location'
               onChange={this.handleLocationChange}
               value={this.state.location}
+              className='rounded-md p-1'
             ></input>
-            <label>Range</label>
+            <label>Range:</label>
             <input
               id='range'
               onChange={this.handleRangeChange}
               value={this.state.range}
+              className='rounded-md p-1'
             ></input>
             <label>Date:</label>
-            <select id='date' name='date'>
+            <select className='rounded-md p-1' id='date' name='date'>
               <option value='0'>today</option>
               <option value='1'>{this.getDay(1)}</option>
               <option value='2'>{this.getDay(2)}</option>
@@ -67,8 +71,9 @@ class Home extends Component {
               <option value='6'>{this.getDay(6)}</option>
             </select>
           </div>
-          <div className='justify-center ml-auto mr-auto'>
+          <div className='mt-3 text-center justify-center ml-auto mr-auto'>
             <button
+              className='bg-flame text-floral_white rounded-md p-2 hover:bg-floral_white hover:text-flame'
               onClick={(e: any) => {
                 this.handleFromSubmit(e);
               }}
@@ -159,14 +164,14 @@ class Home extends Component {
 
     if (crags[0]) {
       return (
-        <ul className='flex flex-wrap justify-center'>
+        <ul className='flex flex-wrap justify-center w-full'>
           {crags.map((crag) => (
             <li
               key={crag.crag_name}
-              className='flex flex-col m-4 h-64 w-full border-1 r-md'
+              className='bg-floral_white flex flex-col m-4 h-40 w-full rounded-md'
             >
-              <div>
-                <h2>crag_name: {crag.crag_name}</h2>
+              <div className='m-3'>
+                <h1 className='text-2xl'>{crag.crag_name}</h1>
                 <h2>distance: {parseInt(crag.distance)}</h2>
                 <h2>
                   weather_score: {crag.weather_score[this.state.dayIndex]}
