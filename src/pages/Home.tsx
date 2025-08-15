@@ -116,7 +116,7 @@ class Home extends Component {
     // Sunday - Saturday : 0 - 6
     const weekdays = ['Sun', 'Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat'];
 
-    return weekdays[day];
+    return weekdays[day % 7];
   };
 
   makeCragList = () => {
